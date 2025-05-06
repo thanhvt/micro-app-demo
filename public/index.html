@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Micro App Demo</title>
+  <script>
+    // Helper function to check if micro app is registered
+    window.checkMicroApp = function() {
+      console.log('Checking micro app registration...');
+      console.log('window.micro_app_demo:', window.micro_app_demo);
+      console.log('window.__MICRO_APP_DEMO_MOUNT__:', window.__MICRO_APP_DEMO_MOUNT__);
+
+      if (window.__CHECK_MICRO_APP_DEMO__) {
+        window.__CHECK_MICRO_APP_DEMO__();
+      }
+
+      return window.micro_app_demo && typeof window.micro_app_demo.mount === 'function';
+    };
+
+    // Check after 3 seconds
+    setTimeout(function() {
+      console.log('Delayed check for micro app:');
+      window.checkMicroApp();
+    }, 3000);
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <div style="position: fixed; bottom: 10px; right: 10px; background: #f0f0f0; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+    <button onclick="window.checkMicroApp()">Check Micro App Registration</button>
+  </div>
+</body>
+</html>

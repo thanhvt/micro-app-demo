@@ -1,0 +1,17 @@
+{
+  "name": "micro-app-demo",
+  "version": "0.1.0",
+  "scripts": [
+    "http://localhost:3001/static/js/main.js",
+    "http://localhost:3001/main.js",
+    "/static/js/main.js",
+    "/main.js"
+  ],
+  "styles": [
+    "http://localhost:3001/static/css/main.css",
+    "http://localhost:3001/main.css",
+    "/static/css/main.css",
+    "/main.css"
+  ],
+  "dependencies": []
+}
