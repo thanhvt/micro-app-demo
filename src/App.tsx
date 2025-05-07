@@ -21,7 +21,7 @@ interface AppProps {
   eventBus: EventBus;
 }
 
-const App: React.FC<AppProps> = ({ basePath, authState, eventBus }) => {
+const App: React.FC<AppProps> = ({ basePath, authState, eventBus, isEmbedded = false }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState(authState.user);
 
@@ -57,26 +57,36 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus }) => {
 
   return (
     <BrowserRouter basename={basePath}>
-      <Layout style={{ minHeight: '100vh' }}>
-        <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
-          <div className="p-4 h-16 flex items-center justify-center border-b border-gray-200">
-            <h1 className={`text-lg font-bold ${collapsed ? 'hidden' : 'block'}`}>Micro App Demo</h1>
-            {collapsed && <ShoppingOutlined style={{ fontSize: '24px' }} />}
-          </div>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['products']}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            <Menu.Item key="products" icon={<ShoppingOutlined />}>
-              <Link to="/">Products</Link>
-            </Menu.Item>
-            <Menu.Item key="customers" icon={<TeamOutlined />}>
-              <Link to="/customers">Customers</Link>
-            </Menu.Item>
-          </Menu>
-        </Sider>
+      <Layout style={{ minHeight: "100vh" }}>
+        {!isEmbedded && (
+          <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
+            <div className="p-4 h-16 flex items-center justify-center border-b border-gray-200">
+              <h1
+                className={`text-lg font-bold ${
+                  collapsed ? "hidden" : "block"
+                }`}
+              >
+                Micro App Demo
+              </h1>
+              {collapsed && <ShoppingOutlined style={{ fontSize: "24px" }} />}
+            </div>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["products"]}
+              style={{ height: "100%", borderRight: 0 }}
+            >
+              <Menu.Item key="products" icon={<ShoppingOutlined />}>
+                <Link to="/">Products</Link>
+              </Menu.Item>
+              <Menu.Item key="customers" icon={<TeamOutlined />}>
+                <Link to="/customers">Customers</Link>
+              </Menu.Item>
+            </Menu>
+          </Sider>
+        )}
+
         <Layout>
+          {!isEmbedded && (
           <Header className="bg-white p-0 flex justify-between items-center px-4 shadow-sm">
             <Button
               type="text"
@@ -84,14 +94,12 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus }) => {
               onClick={() => setCollapsed(!collapsed)}
             />
             <div className="flex items-center">
-              {user && (
-                <span className="mr-2">Welcome, {user.name}</span>
-              )}
+              {user && <span className="mr-2">Welcome, {user.name}</span>}
               <Dropdown overlay={userMenu} placement="bottomRight">
                 <Avatar icon={<UserOutlined />} />
               </Dropdown>
             </div>
-          </Header>
+          </Header>)}
           <Content className="bg-gray-50">
             <Routes>
               <Route path="/" element={<Navigate to="/products" replace />} />

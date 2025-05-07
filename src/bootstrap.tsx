@@ -16,6 +16,17 @@ interface MountProps {
   basePath: string;
   authState: AuthState;
   eventBus: EventBus;
+  path?: string;
+  search?: string;
+  hash?: string;
+  state?: any;
+  key?: string;
+  index?: number;
+  pathname?: string;
+  query?: any;
+  params?: any;
+  location?: any;
+  isEmbedded?: boolean; // Thêm prop này
 }
 
 // Create a root for React to render into
