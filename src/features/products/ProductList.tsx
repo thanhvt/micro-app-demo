@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Table, Button, Input, Space } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { Table, Button, Input, Space, Tooltip } from 'antd';
+import { SearchOutlined, PlusOutlined, DeleteOutlined, EditOutlined, ExportOutlined, EyeOutlined } from '@ant-design/icons';
 import { mockProducts } from '../../data/mockData';
 import { Product } from '../../types/features';
 
@@ -20,6 +20,17 @@ const ProductList: React.FC = () => {
       product.description.toLowerCase().includes(searchText.toLowerCase()) ||
       product.category.toLowerCase().includes(searchText.toLowerCase())
   );
+
+    // Hàm để mở chi tiết sản phẩm trong tab mới
+    const openInNewTab = (productId: string) => {
+      // Lấy base URL của ứng dụng
+      const baseUrl = window.location.origin;
+      // Tạo URL đầy đủ đến trang chi tiết sản phẩm
+      const detailUrl = `${baseUrl}/micro-app-demo/products/${productId}`;
+      
+      // Mở tab mới với URL đã tạo
+      window.open(detailUrl, '_blank');
+    };
 
   const columns = [
     {
@@ -51,13 +62,25 @@ const ProductList: React.FC = () => {
       key: 'actions',
       render: (_: any, record: Product) => (
         <Space size="middle">
-          <Link to={`/products/${record.id}`} className="text-blue-500 hover:text-blue-700">
-            View
-          </Link>
-          <Link to={`/products/edit/${record.id}`} className="text-green-500 hover:text-green-700">
-            Edit
-          </Link>
-        </Space>
+        <Tooltip title="View Details">
+          <Button 
+            icon={<EyeOutlined />} 
+            onClick={() => navigate(`/products/${record.id}`)} 
+          />
+        </Tooltip>
+        <Tooltip title="Open in New Tab">
+          <Button 
+            icon={<ExportOutlined />} 
+            onClick={() => openInNewTab(record.id)} 
+          />
+        </Tooltip>
+        <Tooltip title="Edit">
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => navigate(`/products/edit/${record.id}`)} 
+          />
+        </Tooltip>
+      </Space>
       ),
     },
   ];

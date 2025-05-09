@@ -19,6 +19,7 @@ interface AppProps {
   basePath: string;
   authState: AuthState;
   eventBus: EventBus;
+  isEmbedded?: boolean;
 }
 
 const App: React.FC<AppProps> = ({ basePath, authState, eventBus, isEmbedded = false }) => {
@@ -106,7 +107,7 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, isEmbedded = f
               <Route path="/products" element={<ProductList />} />
               <Route path="/products/new" element={<ProductForm />} />
               <Route path="/products/edit/:id" element={<ProductForm />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/products/:id" element={<ProductDetail showNotification={showNotification}/>} />
               <Route path="/customers" element={<CustomerList />} />
               <Route path="/customers/:id" element={<CustomerDetail />} />
               <Route path="/customers/new" element={<CustomerForm />} />
