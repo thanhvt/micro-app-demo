@@ -75,15 +75,23 @@ export const unmount = (container: HTMLElement | null) => {
   }
 };
 
-// Thêm hàm updatePath để cập nhật đường dẫn mà không cần mount lại
-export const updatePath = (path: string) => {
-  console.log('Updating path to:', path);
+// Thêm phương thức updatePath
+export const updatePath = (newPath: string) => {
+  console.log('Updating path without remounting:', newPath);
   
-  // Use the global navigation function if available
-  if (window.microAppDemoNavigate) {
-    window.microAppDemoNavigate(path);
-  } else {
-    console.warn('microAppDemoNavigate is not available');
+  // Cập nhật path trong micro app
+  if (window.microAppRouter) {
+    window.microAppRouter.navigate(newPath);
+  }
+};
+
+// Thêm phương thức updateAuth
+export const updateAuth = (newAuthState: AuthState) => {
+  console.log('Updating auth state without remounting:', newAuthState);
+  
+  // Cập nhật auth state trong micro app
+  if (window.microAppUpdateAuth) {
+    window.microAppUpdateAuth(newAuthState);
   }
 };
 
@@ -103,13 +111,14 @@ console.log('Registering micro_app_demo in global scope');
 window.micro_app_demo = {
   mount,
   unmount,
-  updatePath
+  updatePath,
+  updateAuth
 };
 
 // Cách 2: Đăng ký thông qua defineProperty để đảm bảo không bị ghi đè
 if (!window.micro_app_demo || typeof window.micro_app_demo.mount !== 'function') {
   Object.defineProperty(window, 'micro_app_demo', {
-    value: { mount, unmount, updatePath },
+    value: { mount, unmount, updatePath, updateAuth },
     writable: false,
     configurable: true,
   });
@@ -170,6 +179,9 @@ if (process.env.NODE_ENV === 'development') {
 declare global {
   interface Window {
     micro_app_demo: MicroFrontend;
-    microAppDemoNavigate?: (path: string) => void;
+    microAppRouter?: {
+      navigate: (path: string) => void;
+    };
+    microAppUpdateAuth?: (authState: AuthState) => void;
   }
 }

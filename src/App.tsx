@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown, Button } from 'antd';
 import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { AuthState, EventBus } from './types/auth';
@@ -19,17 +19,43 @@ interface AppProps {
   basePath: string;
   authState: AuthState;
   eventBus: EventBus;
+  path: string;
   isEmbedded?: boolean;
 }
 
-const App: React.FC<AppProps> = ({ basePath, authState, eventBus, isEmbedded = false }) => {
+const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedded = false }) => {
+  const [user, setUser] = useState(authState?.user);
+  const [currentPath, setCurrentPath] = useState(path);
   const [collapsed, setCollapsed] = useState(false);
-  const [user, setUser] = useState(authState.user);
+  
+  // Hàm để cập nhật auth state
+  const updateAuth = useCallback((newAuthState: AuthState) => {
+    setUser(newAuthState?.user);
+  }, []);
+
+  // Hàm để cập nhật path
+  const updatePath = useCallback((newPath: string) => {
+    setCurrentPath(newPath);
+    // Không sử dụng useLocation ở đây, thay vào đó lưu path trong state
+  }, []);
+
+  // Đăng ký các hàm cập nhật vào window để bootstrap.tsx có thể gọi
+  useEffect(() => {
+    window.microAppUpdateAuth = updateAuth;
+    window.microAppRouter = {
+      navigate: updatePath
+    };
+    
+    return () => {
+      delete window.microAppUpdateAuth;
+      delete window.microAppRouter;
+    };
+  }, [updateAuth, updatePath]);
 
   // Listen for auth state changes from the shell
   useEffect(() => {
     const unsubscribe = eventBus.on('shell:auth-change', (newAuthState: AuthState) => {
-      setUser(newAuthState.user);
+      updateAuth(newAuthState);
     });
 
     // Request the current auth state from the shell
@@ -37,7 +63,7 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, isEmbedded = f
 
     // Clean up the subscription when the component unmounts
     return unsubscribe;
-  }, [eventBus]);
+  }, [eventBus, updateAuth]);
 
   const showNotification = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     eventBus.emit('shell:notification', { type, message });
