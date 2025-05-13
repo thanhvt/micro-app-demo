@@ -41,23 +41,6 @@ module.exports = (env, argv) => {
       allowedHosts: 'all',
       // Bật hot module replacement
       hot: true,
-      // Cấu hình WebSocket để tránh vấn đề kết nối
-      client: {
-        webSocketURL: 'auto://0.0.0.0:0/ws',
-        overlay: {
-          errors: true,
-          warnings: false,
-        },
-        progress: true,
-      },
-      // Cấu hình để tránh vấn đề CORS khi gọi API
-      proxy: {
-        '/api': {
-          target: 'http://localhost:3000',
-          pathRewrite: { '^/api': '' },
-          changeOrigin: true,
-        },
-      },
       // Cấu hình để log ít hơn
       devMiddleware: {
         stats: 'minimal',

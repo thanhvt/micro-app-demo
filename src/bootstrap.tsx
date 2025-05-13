@@ -9,6 +9,7 @@ import 'antd/dist/reset.css';
 interface MicroFrontend {
   mount: (container: HTMLElement, props: MountProps) => void;
   unmount: (container: HTMLElement | null) => void;
+  updatePath: (path: string) => void;
 }
 
 // Define the props that the shell will pass to the micro frontend
@@ -74,6 +75,18 @@ export const unmount = (container: HTMLElement | null) => {
   }
 };
 
+// Thêm hàm updatePath để cập nhật đường dẫn mà không cần mount lại
+export const updatePath = (path: string) => {
+  console.log('Updating path to:', path);
+  
+  // Use the global navigation function if available
+  if (window.microAppDemoNavigate) {
+    window.microAppDemoNavigate(path);
+  } else {
+    console.warn('microAppDemoNavigate is not available');
+  }
+};
+
 // Register the micro frontend in the global scope
 console.log('Registering micro_app_demo in global scope');
 
@@ -90,12 +103,13 @@ console.log('Registering micro_app_demo in global scope');
 window.micro_app_demo = {
   mount,
   unmount,
+  updatePath
 };
 
 // Cách 2: Đăng ký thông qua defineProperty để đảm bảo không bị ghi đè
 if (!window.micro_app_demo || typeof window.micro_app_demo.mount !== 'function') {
   Object.defineProperty(window, 'micro_app_demo', {
-    value: { mount, unmount },
+    value: { mount, unmount, updatePath },
     writable: false,
     configurable: true,
   });
@@ -156,5 +170,6 @@ if (process.env.NODE_ENV === 'development') {
 declare global {
   interface Window {
     micro_app_demo: MicroFrontend;
+    microAppDemoNavigate?: (path: string) => void;
   }
 }
