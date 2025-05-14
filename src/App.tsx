@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown, Button } from 'antd';
 import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined, FileTextOutlined } from '@ant-design/icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthState, EventBus } from './types/auth';
 
 // Import pages
@@ -30,7 +32,7 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
   const [user, setUser] = useState(authState?.user);
   const [currentPath, setCurrentPath] = useState(path);
   const [collapsed, setCollapsed] = useState(false);
-  
+
   // Hàm để cập nhật auth state
   const updateAuth = useCallback((newAuthState: AuthState) => {
     setUser(newAuthState?.user);
@@ -48,7 +50,7 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
     window.microAppRouter = {
       navigate: updatePath
     };
-    
+
     return () => {
       delete window.microAppUpdateAuth;
       delete window.microAppRouter;
@@ -69,24 +71,44 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
   }, [eventBus, updateAuth]);
 
   const showNotification = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
+    // Use both the host app notification system and local toast
     eventBus.emit('shell:notification', { type, message });
+
+    // Also show a local toast notification
+    switch (type) {
+      case 'success':
+        toast.success(message);
+        break;
+      case 'error':
+        toast.error(message);
+        break;
+      case 'warning':
+        toast.warning(message);
+        break;
+      default:
+        toast.info(message);
+    }
   };
 
+  // Helper function to navigate to shell paths
   const navigateToShell = (path: string) => {
     eventBus.emit('shell:navigation', { path });
   };
 
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="profile">Profile</Menu.Item>
-      <Menu.Item key="settings">Settings</Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="logout">Logout</Menu.Item>
-    </Menu>
-  );
-
   return (
     <BrowserRouter basename={basePath}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Layout style={{ minHeight: "100vh" }}>
         {!isEmbedded && (
           <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
@@ -128,8 +150,13 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
             />
             <div className="flex items-center">
               {user && <span className="mr-2">Welcome, {user.name}</span>}
-              <Dropdown overlay={userMenu} placement="bottomRight">
-                <Avatar icon={<UserOutlined />} />
+              <Dropdown menu={{ items: [
+                { key: 'profile', label: 'Profile' },
+                { key: 'settings', label: 'Settings' },
+                { type: 'divider' },
+                { key: 'logout', label: 'Logout' }
+              ] }} placement="bottomRight">
+                <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
               </Dropdown>
             </div>
           </Header>)}

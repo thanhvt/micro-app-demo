@@ -76,26 +76,41 @@ export const VALIDATION = {
 
 // Animation constants
 export const ANIMATION = {
-  DURATION: 0.3,
+  DURATION: 0.4,
   EASE: [0.4, 0, 0.2, 1] as const,
   STEP_TRANSITION: {
-    initial: { opacity: 0, x: 50 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -50 }
+    initial: { opacity: 0, x: 50, filter: 'blur(8px)' },
+    animate: { opacity: 1, x: 0, filter: 'blur(0px)' },
+    exit: { opacity: 0, x: -50, filter: 'blur(8px)' }
   },
   PANEL_TRANSITION: {
-    initial: { opacity: 0, height: 0 },
-    animate: { opacity: 1, height: 'auto' },
-    exit: { opacity: 0, height: 0 }
+    initial: { opacity: 0, height: 0, y: -10 },
+    animate: { opacity: 1, height: 'auto', y: 0 },
+    exit: { opacity: 0, height: 0, y: -10 }
   },
   PAGE_TRANSITION: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
+    initial: { opacity: 0, y: 20, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -20, scale: 0.98 }
   },
   FORM_TRANSITION: {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.95 }
+    initial: { opacity: 0, scale: 0.95, y: 10 },
+    animate: { opacity: 1, scale: 1, y: 0 },
+    exit: { opacity: 0, scale: 0.95, y: -10 }
+  },
+  BUTTON_HOVER: {
+    scale: 1.05,
+    y: -2,
+    transition: { duration: 0.2 }
+  },
+  BUTTON_TAP: {
+    scale: 0.95,
+    y: 0,
+    transition: { duration: 0.1 }
+  },
+  SUCCESS_ANIMATION: {
+    initial: { opacity: 0, scale: 0.8 },
+    animate: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 200, damping: 15 } },
+    exit: { opacity: 0, scale: 0.8 }
   }
 } as const;

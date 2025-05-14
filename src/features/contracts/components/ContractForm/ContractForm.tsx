@@ -1,6 +1,6 @@
-import React from 'react';
-import { Steps, Button, message } from 'antd';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { Steps, Button, Tooltip } from 'antd';
+import { motion, AnimatePresence } from 'framer-motion';
 import styled from '@emotion/styled';
 import { useFormStep } from '../../../shared/hooks/useFormStep';
 import type { FormStep } from '../../../shared/hooks/useFormStep';
@@ -10,6 +10,11 @@ import DetailInfoStep from './steps/DetailInfoStep';
 import AttachmentStep from './steps/AttachmentStep';
 import ConfirmationStep from './steps/ConfirmationStep';
 import { ANIMATION } from '../../constants/contract.constants';
+import LoadingOverlay from '../LoadingOverlay/LoadingOverlay';
+import StepTransitionLoader from '../StepTransitionLoader/StepTransitionLoader';
+import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
+import { ArrowLeftOutlined, ArrowRightOutlined, CheckOutlined } from '@ant-design/icons';
+import useToast from '../../../shared/hooks/useToast';
 
 interface ContractFormProps {
   initialData?: Partial<Contract>;
@@ -22,10 +27,17 @@ const FormContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
 `;
 
 const StepContent = styled(motion.div)`
   margin-top: 24px;
+  position: relative;
+  min-height: 300px;
 `;
 
 const ButtonGroup = styled.div`
@@ -34,6 +46,50 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid #f0f0f0;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 12px;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 576px) {
+    width: 100%;
+  }
+`;
+
+const FormHeader = styled.div`
+  margin-bottom: 24px;
+`;
+
+const SuccessContainer = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 // Helper function to check if contract data is complete enough to be submitted
@@ -42,17 +98,17 @@ const isCompleteContract = (data: Partial<Contract>): boolean => {
   if (!data.basicInfo?.contractCode || !data.basicInfo?.contractName) {
     return false;
   }
-  
+
   // Check for required fields in detailInfo
   if (!data.detailInfo?.totalValue || !data.detailInfo?.implementationTime) {
     return false;
   }
-  
+
   // Check for confirmation
   if (!data.confirmation?.termsAccepted) {
     return false;
   }
-  
+
   return true;
 };
 
@@ -130,9 +186,18 @@ const defaultInitialData: Partial<Contract> = {
 };
 
 const ContractForm: React.FC<ContractFormProps> = ({ initialData = {}, onSubmit }) => {
+  // State for loading and success
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isStepTransitioning, setIsStepTransitioning] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [submittedData, setSubmittedData] = useState<Contract | null>(null);
+
+  // Use our custom toast hook
+  const { showSuccessToast, showErrorToast, showInfoToast } = useToast();
+
   // Merge provided initialData with defaultInitialData
   const mergedInitialData = { ...defaultInitialData, ...initialData };
-  
+
   // Create steps array first - we'll populate it with real content later
   const stepsConfig: FormStep[] = [
     { title: 'Thông tin cơ bản', content: <></> },
@@ -140,7 +205,66 @@ const ContractForm: React.FC<ContractFormProps> = ({ initialData = {}, onSubmit 
     { title: 'Phụ lục & tài liệu', content: <></> },
     { title: 'Xác nhận', content: <></> },
   ];
-  
+
+  // Handle form submission with loading state
+  const handleSubmit = async (data: Partial<Contract>) => {
+    if (!isCompleteContract(data)) {
+      showErrorToast('Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    setIsSubmitting(true);
+    showInfoToast('Đang xử lý dữ liệu...');
+
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      if (onSubmit) {
+        setSubmittedData(data as Contract);
+        onSubmit(data as Contract);
+        showSuccessToast('Hợp đồng đã được lưu thành công!');
+        setShowSuccess(true);
+      }
+    } catch (error) {
+      showErrorToast('Có lỗi xảy ra khi lưu dữ liệu');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle step transition with loading state
+  const handleNextStep = async () => {
+    setIsStepTransitioning(true);
+
+    // Simulate validation delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Show a toast notification when moving to the next step
+    const nextStepIndex = currentStep + 1;
+    if (nextStepIndex < totalSteps) {
+      const nextStepTitle = steps[nextStepIndex]?.title || '';
+      showInfoToast(`Chuyển đến bước: ${nextStepTitle}`);
+    }
+
+    goToNextStep();
+
+    // Add a small delay to make the transition smoother
+    setTimeout(() => {
+      setIsStepTransitioning(false);
+    }, 300);
+  };
+
+  const handlePreviousStep = () => {
+    setIsStepTransitioning(true);
+
+    // Add a small delay to make the transition smoother
+    setTimeout(() => {
+      goToPreviousStep();
+      setIsStepTransitioning(false);
+    }, 300);
+  };
+
   // Set up form steps with state management
   const {
     currentStep,
@@ -150,44 +274,106 @@ const ContractForm: React.FC<ContractFormProps> = ({ initialData = {}, onSubmit 
     formData,
     updateFormData,
     isLastStep,
-  } = useFormStep<Partial<Contract>>(stepsConfig, mergedInitialData, (data) => {
-    // Ensure data is complete before calling onSubmit
-    if (onSubmit && isCompleteContract(data)) {
-      onSubmit(data as Contract);
-    }
-  });
-  
+  } = useFormStep<Partial<Contract>>(stepsConfig, mergedInitialData, handleSubmit);
+
   // Now create the actual step content with current data and update handler
   const steps = createSteps(formData, updateFormData);
 
   return (
     <FormContainer>
-      <Steps
-        current={currentStep}
-        items={steps.map(step => ({ title: step.title }))}
+      {/* Loading overlay for form submission */}
+      <LoadingOverlay
+        isLoading={isSubmitting}
+        message="Đang lưu dữ liệu..."
       />
-      <StepContent
-        initial={ANIMATION.STEP_TRANSITION.initial}
-        animate={ANIMATION.STEP_TRANSITION.animate}
-        exit={ANIMATION.STEP_TRANSITION.exit}
-        transition={{ duration: ANIMATION.DURATION, ease: ANIMATION.EASE }}
-        key={currentStep}
-      >
-        {steps[currentStep].content}
-      </StepContent>
+
+      <FormHeader>
+        <Steps
+          current={currentStep}
+          items={steps.map(step => ({ title: step.title }))}
+          responsive={true}
+          size="small"
+        />
+        <ProgressIndicator
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          showPercentage={true}
+        />
+      </FormHeader>
+
+      {/* Step transition loader */}
+      <StepTransitionLoader isLoading={isStepTransitioning} />
+
+      <AnimatePresence mode="wait">
+        <StepContent
+          initial={ANIMATION.STEP_TRANSITION.initial}
+          animate={ANIMATION.STEP_TRANSITION.animate}
+          exit={ANIMATION.STEP_TRANSITION.exit}
+          transition={{ duration: ANIMATION.DURATION, ease: ANIMATION.EASE }}
+          key={currentStep}
+        >
+          {steps[currentStep].content}
+
+          {/* Success screen overlay */}
+          {showSuccess && (
+            <SuccessContainer
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                <div className="text-5xl text-green-500 mb-4">
+                  <CheckOutlined />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Thành công!</h2>
+                <p className="text-gray-600 mb-6">
+                  Hợp đồng đã được lưu thành công.
+                </p>
+                <div className="flex justify-center">
+                  <Button type="primary" onClick={() => setShowSuccess(false)}>
+                    Đóng
+                  </Button>
+                </div>
+              </div>
+            </SuccessContainer>
+          )}
+        </StepContent>
+      </AnimatePresence>
 
       <ButtonGroup>
         {currentStep > 0 && (
-          <Button onClick={goToPreviousStep}>Previous</Button>
+          <StyledButton
+            onClick={handlePreviousStep}
+            disabled={isStepTransitioning || isSubmitting}
+          >
+            <ArrowLeftOutlined /> Quay lại
+          </StyledButton>
         )}
+
+        <div style={{ flex: 1 }}></div>
+
         {currentStep < totalSteps - 1 ? (
-          <Button type="primary" onClick={goToNextStep}>
-            Tiếp theo
-          </Button>
+          <Tooltip title="Chuyển đến bước tiếp theo">
+            <StyledButton
+              type="primary"
+              onClick={handleNextStep}
+              disabled={isStepTransitioning || isSubmitting}
+            >
+              Tiếp theo <ArrowRightOutlined />
+            </StyledButton>
+          </Tooltip>
         ) : (
-          <Button type="primary" onClick={() => onSubmit?.(formData as Contract)}>
-            Hoàn thành
-          </Button>
+          <Tooltip title="Hoàn thành và lưu hợp đồng">
+            <StyledButton
+              type="primary"
+              onClick={() => handleSubmit(formData)}
+              loading={isSubmitting}
+              disabled={isStepTransitioning}
+            >
+              Hoàn thành <CheckOutlined />
+            </StyledButton>
+          </Tooltip>
         )}
       </ButtonGroup>
     </FormContainer>

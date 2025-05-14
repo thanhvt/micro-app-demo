@@ -19,10 +19,38 @@ const StyledPanel = styled(motion.div)`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
 `;
 
 const PanelContent = styled(motion.div)`
   padding: 16px;
+
+  @media (max-width: 576px) {
+    padding: 12px 8px;
+  }
+`;
+
+const StyledCollapse = styled(Collapse)`
+  .ant-collapse-header {
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #1890ff;
+      outline-offset: -2px;
+    }
+  }
+
+  .ant-collapse-content-box {
+    padding: 0 !important;
+  }
 `;
 
 const AnimatedPanel: React.FC<AnimatedPanelProps> = ({
@@ -34,8 +62,13 @@ const AnimatedPanel: React.FC<AnimatedPanelProps> = ({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
-    <StyledPanel className={className}>
-      <Collapse
+    <StyledPanel
+      className={className}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <StyledCollapse
         activeKey={isExpanded ? ['1'] : []}
         onChange={() => setIsExpanded(!isExpanded)}
       >
@@ -55,7 +88,7 @@ const AnimatedPanel: React.FC<AnimatedPanelProps> = ({
             </PanelContent>
           </AnimatePresence>
         </Panel>
-      </Collapse>
+      </StyledCollapse>
     </StyledPanel>
   );
 };
