@@ -4,7 +4,7 @@
 
 /* Custom styles */
 .micro-app-container {
-  @apply p-4;
+  /* @apply p-4; */
 }
 
 .page-title {
