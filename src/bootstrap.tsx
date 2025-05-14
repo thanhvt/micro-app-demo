@@ -10,6 +10,7 @@ interface MicroFrontend {
   mount: (container: HTMLElement, props: MountProps) => void;
   unmount: (container: HTMLElement | null) => void;
   updatePath: (path: string) => void;
+  updateAuth: (authState: AuthState) => void;
 }
 
 // Define the props that the shell will pass to the micro frontend
@@ -17,17 +18,8 @@ interface MountProps {
   basePath: string;
   authState: AuthState;
   eventBus: EventBus;
-  path?: string;
-  search?: string;
-  hash?: string;
-  state?: any;
-  key?: string;
-  index?: number;
-  pathname?: string;
-  query?: any;
-  params?: any;
-  location?: any;
-  isEmbedded?: boolean; // Thêm prop này
+  path: string;
+  isEmbedded?: boolean;
 }
 
 // Create a root for React to render into
@@ -171,6 +163,7 @@ if (process.env.NODE_ENV === 'development') {
           console.log(`[DEV] Emitted event ${event} with data:`, data);
         },
       },
+      path: ''
     });
   }
 }
