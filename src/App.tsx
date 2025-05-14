@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown, Button } from 'antd';
-import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined, FileTextOutlined } from '@ant-design/icons';
 import { AuthState, EventBus } from './types/auth';
 
 // Import pages
@@ -11,6 +11,9 @@ import ProductForm from './features/products/ProductForm';
 import CustomerList from './features/customers/CustomerList';
 import CustomerDetail from './features/customers/CustomerDetail';
 import CustomerForm from './features/customers/CustomerForm';
+import ContractListPage from './features/contracts/pages/ContractListPage';
+import ContractDetailPage from './features/contracts/pages/ContractDetailPage';
+import ContractFormPage from './features/contracts/pages/ContractFormPage';
 
 const { Header, Sider, Content } = Layout;
 
@@ -108,6 +111,9 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
               <Menu.Item key="customers" icon={<TeamOutlined />}>
                 <Link to="/customers">Customers</Link>
               </Menu.Item>
+              <Menu.Item key="contracts" icon={<FileTextOutlined />}>
+                <Link to="/contracts">Contracts</Link>
+              </Menu.Item>
             </Menu>
           </Sider>
         )}
@@ -138,6 +144,10 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
               <Route path="/customers/:id" element={<CustomerDetail />} />
               <Route path="/customers/new" element={<CustomerForm />} />
               <Route path="/customers/edit/:id" element={<CustomerForm />} />
+              <Route path="/contracts" element={<ContractListPage />} />
+              <Route path="/contracts/new" element={<ContractFormPage />} />
+              <Route path="/contracts/edit/:id" element={<ContractFormPage />} />
+              <Route path="/contracts/:id" element={<ContractDetailPage />} />
             </Routes>
           </Content>
         </Layout>
