@@ -140,7 +140,7 @@ button,
   cursor: pointer
 }
 
-/* Ant Design customization */
+/* Ant Design button customization */
 .ant-btn-primary{
   background: #1A7D37;
 }
@@ -154,6 +154,81 @@ button,
 
 .ant-btn-link:hover{
   color: #2DA44E !important;
+}
+
+/* Button styles */
+.btn-custom {
+  @apply bg-primary-color-btn text-white font-medium py-1 px-3 h-10 rounded-lg;
+}
+.btn-outline-custom {
+  @apply font-medium py-1 px-3 h-10 rounded-lg !important;
+}
+.btn-custom:disabled{
+  @apply opacity-75;
+}
+.btn-outline-custom:hover {
+  @apply border-primary-color-btn text-green-700 !important;
+}
+.btn-custom:hover {
+  @apply text-green-700 border-green-500 !important;
+}
+.btn-danger {
+  @apply bg-red-700 text-white font-medium py-1 px-3 h-10 rounded-lg;
+}
+.btn-danger:hover {
+  @apply text-red-700 border-red-500 !important;
+}
+.btn-secondary {
+  @apply bg-primary-bg-color text-primary-color font-medium py-1 px-3 rounded;
+}
+.btn-secondary:hover {
+  @apply bg-blue-300;
+}
+
+/* Fix for all Ant Design buttons */
+.ant-btn {
+  height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Fix for specific button types */
+.ant-btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  color: #2DA44E !important;
+}
+
+/* Ensure consistent border-box model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin and padding */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set default font family and size */
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Table styles */
@@ -240,4 +315,62 @@ button,
   box-shadow: none;
   cursor: not-allowed;
   opacity: 1;
+}
+
+/* Ant Design Form customization */
+.ant-form-item {
+  margin-bottom: 16px !important;
+}
+
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  font-size: 14px !important;
+  height: auto !important;
+}
+
+.ant-form-item-explain-error {
+  color: #ff4d4f !important;
+  font-size: 12px !important;
+  margin-top: 2px !important;
+}
+
+.ant-form-item-required::before {
+  color: #ff4d4f !important;
+}
+
+/* Select customization */
+.ant-select {
+  width: 100% !important;
+}
+
+.ant-select-selector {
+  height: 40px !important;
+  padding: 4px 11px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ant-select-selection-search-input {
+  height: 38px !important;
+}
+
+.ant-select-focused .ant-select-selector,
+.ant-select-selector:focus,
+.ant-select-open .ant-select-selector {
+  border-color: #1A7D37 !important;
+  box-shadow: 0 0 0 2px rgba(26, 125, 55, 0.1) !important;
+}
+
+/* DatePicker customization */
+.ant-picker {
+  width: 100% !important;
+  height: 40px !important;
+  border-radius: 6px !important;
+}
+
+.ant-picker-focused {
+  border-color: #1A7D37 !important;
+  box-shadow: 0 0 0 2px rgba(26, 125, 55, 0.1) !important;
 }
