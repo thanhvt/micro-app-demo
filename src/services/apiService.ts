@@ -52,29 +52,54 @@ export const setApiService = (newApiService: Partial<ApiService>) => {
   console.log('API Service updated:', Object.keys(newApiService));
 };
 
+
+// Hàm wrapper để xử lý lỗi chung
+const wrapApiCall = async <T>(apiCall: () => Promise<T>): Promise<T> => {
+  try {
+    return await apiCall();
+  } catch (error: any) {
+    // Xử lý lỗi liên quan đến Modal
+    if (error.message && error.message.includes('Modal instance is not set')) {
+      console.warn('Modal error intercepted:', error.message);
+      throw new Error('Lỗi kết nối với API. Vui lòng thử lại sau.');
+    }
+
+    // Xử lý lỗi token
+    if (error.response && error.response.status === 401) {
+      console.warn('Authentication error:', error.message);
+      throw new Error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.');
+    }
+
+    // Các lỗi khác
+    console.error('API call error:', error);
+    throw error;
+  }
+};
+
+
 // Export các hàm API để sử dụng trong ứng dụng
 export const getRequest: GetRequestFunction = (url, config) => {
-  return apiService.getRequest(url, config);
+  return wrapApiCall(() => apiService.getRequest(url, config));
 };
 
 export const postRequest: PostRequestFunction = (url, data, config) => {
-  return apiService.postRequest(url, data, config);
+  return wrapApiCall(() => apiService.postRequest(url, data, config));
 };
 
 export const putRequest: PutRequestFunction = (url, data, config) => {
-  return apiService.putRequest(url, data, config);
+  return wrapApiCall(() => apiService.putRequest(url, data, config));
 };
 
 export const deleteRequest: DeleteRequestFunction = (url, config) => {
-  return apiService.deleteRequest(url, config);
+  return wrapApiCall(() => apiService.deleteRequest(url, config));
 };
 
 export const getFileRequest: GetFileRequestFunction = (url, config, fileName) => {
-  return apiService.getFileRequest(url, config, fileName);
+  return wrapApiCall(() => apiService.getFileRequest(url, config, fileName));
 };
 
 export const postFileRequest: PostFileRequestFunction = (url, data, fileName, config) => {
-  return apiService.postFileRequest(url, data, fileName, config);
+  return wrapApiCall(() => apiService.postFileRequest(url, data, fileName, config));
 };
 
 // Export default API Service
