@@ -7,7 +7,7 @@
   /* Không có padding khi embedded */
 }
 
-.micro-app-container-standalone {
+.micro-app-container {
   @apply p-4;
 }
 

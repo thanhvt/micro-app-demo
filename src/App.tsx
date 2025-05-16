@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout, Menu, Avatar, Dropdown, Button } from 'antd';
-import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined, FileTextOutlined } from '@ant-design/icons';
+import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined, FileTextOutlined, ProjectOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthState, EventBus } from './types/auth';
@@ -16,6 +16,9 @@ import CustomerForm from './features/customers/CustomerForm';
 import ContractListPage from './features/contracts/pages/ContractListPage';
 import ContractDetailPage from './features/contracts/pages/ContractDetailPage';
 import ContractFormPage from './features/contracts/pages/ContractFormPage';
+import ProjectListPage from './features/projects/pages/ProjectListPage';
+import ProjectDetailPage from './features/projects/pages/ProjectDetailPage';
+import ProjectFormPage from './features/projects/pages/ProjectFormPage';
 
 const { Header, Sider, Content } = Layout;
 
@@ -136,6 +139,9 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
               <Menu.Item key="contracts" icon={<FileTextOutlined />}>
                 <Link to="/contracts">Contracts</Link>
               </Menu.Item>
+              <Menu.Item key="projects" icon={<ProjectOutlined />}>
+                <Link to="/projects">Projects</Link>
+              </Menu.Item>
             </Menu>
           </Sider>
         )}
@@ -175,6 +181,10 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
               <Route path="/contracts/new" element={<ContractFormPage />} />
               <Route path="/contracts/edit/:id" element={<ContractFormPage />} />
               <Route path="/contracts/:id" element={<ContractDetailPage />} />
+              <Route path="/projects" element={<ProjectListPage />} />
+              <Route path="/projects/new" element={<ProjectFormPage />} />
+              <Route path="/projects/edit/:id" element={<ProjectFormPage />} />
+              <Route path="/projects/:id" element={<ProjectDetailPage />} />
             </Routes>
           </Content>
         </Layout>
