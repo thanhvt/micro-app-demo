@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { AuthState, EventBus } from './types/auth';
+import { ApiFunctionsEvent, AuthState, EventBus, MicroToShellEvents, ShellToMicroEvents } from './types/auth';
+import { setApiService } from './services/apiService';
 import './index.css';
 import 'antd/dist/reset.css';
 
@@ -40,13 +41,22 @@ export const mount = (container: HTMLElement, props: MountProps) => {
 
   // Notify the shell that the micro app has loaded
   if (props.eventBus) {
-    props.eventBus.emit('micro:loaded', { name: 'micro-app-demo' });
+    props.eventBus.emit(MicroToShellEvents.LOADED, { name: 'micro-app-demo' });
 
     // Show a welcome notification
-    props.eventBus.emit('shell:notification', {
+    props.eventBus.emit(MicroToShellEvents.NOTIFICATION, {
       type: 'success',
       message: 'Micro App Demo loaded successfully!'
     });
+
+    // Đăng ký lắng nghe sự kiện API functions
+    props.eventBus.on(ShellToMicroEvents.API_FUNCTIONS, (apiFunctions: ApiFunctionsEvent) => {
+      console.log('Received API functions from shell in bootstrap:', Object.keys(apiFunctions));
+      setApiService(apiFunctions);
+    });
+
+    // Yêu cầu API functions từ shell
+    props.eventBus.emit(MicroToShellEvents.REQUEST_API_FUNCTIONS, {});
   } else {
     console.warn('EventBus not provided in mount props');
   }
@@ -70,7 +80,7 @@ export const unmount = (container: HTMLElement | null) => {
 // Thêm phương thức updatePath
 export const updatePath = (newPath: string) => {
   console.log('Updating path without remounting:', newPath);
-  
+
   // Cập nhật path trong micro app
   if (window.microAppRouter) {
     window.microAppRouter.navigate(newPath);
@@ -80,7 +90,7 @@ export const updatePath = (newPath: string) => {
 // Thêm phương thức updateAuth
 export const updateAuth = (newAuthState: AuthState) => {
   console.log('Updating auth state without remounting:', newAuthState);
-  
+
   // Cập nhật auth state trong micro app
   if (window.microAppUpdateAuth) {
     window.microAppUpdateAuth(newAuthState);

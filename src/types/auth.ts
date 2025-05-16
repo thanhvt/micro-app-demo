@@ -25,14 +25,16 @@ export enum MicroToShellEvents {
   REQUEST_AUTH = 'micro:request-auth',
   PATH_CHANGED = 'micro:path-changed',
   LOADED = 'micro:loaded',
-  NEW_TAB = 'micro:new-tab'
+  NEW_TAB = 'micro:new-tab',
+  REQUEST_API_FUNCTIONS = 'micro:request-api-functions'
 }
 
 // Các sự kiện từ shell đến micro app
 export enum ShellToMicroEvents {
   AUTH_CHANGE = 'shell:auth-change',
   PATH_CHANGED = 'shell:path-changed',
-  NAVIGATION = 'shell:navigation'
+  NAVIGATION = 'shell:navigation',
+  API_FUNCTIONS = 'shell:api-functions'
 }
 
 // Kiểu dữ liệu cho sự kiện path-changed
@@ -61,4 +63,14 @@ export interface LoadedEvent {
 // Kiểu dữ liệu cho sự kiện new-tab
 export interface NewTabEvent {
   path?: string;
+}
+
+// Kiểu dữ liệu cho API functions
+export interface ApiFunctionsEvent {
+  getRequest?: (url: string, config?: any) => Promise<any>;
+  postRequest?: (url: string, data: any, config?: any) => Promise<any>;
+  putRequest?: (url: string, data: any, config?: any) => Promise<any>;
+  deleteRequest?: (url: string, config?: any) => Promise<any>;
+  getFileRequest?: (url: string, config?: any, fileName?: string) => Promise<any>;
+  postFileRequest?: (url: string, data: any, fileName?: string, config?: any) => Promise<any>;
 }

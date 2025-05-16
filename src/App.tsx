@@ -4,7 +4,8 @@ import { Layout, Menu, Avatar, Dropdown, Button, ConfigProvider } from 'antd';
 import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined, FileTextOutlined, ProjectOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthState, EventBus } from './types/auth';
+import { ApiFunctionsEvent, AuthState, EventBus, MicroToShellEvents, ShellToMicroEvents } from './types/auth';
+import { setApiService } from './services/apiService';
 
 // Import pages
 import ProductList from './features/products/ProductList';
@@ -62,20 +63,32 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
 
   // Listen for auth state changes from the shell
   useEffect(() => {
-    const unsubscribe = eventBus.on('shell:auth-change', (newAuthState: AuthState) => {
+    const unsubscribeAuth = eventBus.on(ShellToMicroEvents.AUTH_CHANGE, (newAuthState: AuthState) => {
       updateAuth(newAuthState);
     });
 
+    // Lắng nghe API functions từ shell
+    const unsubscribeApi = eventBus.on(ShellToMicroEvents.API_FUNCTIONS, (apiFunctions: ApiFunctionsEvent) => {
+      console.log('Received API functions from shell:', Object.keys(apiFunctions));
+      setApiService(apiFunctions);
+    });
+
     // Request the current auth state from the shell
-    eventBus.emit('micro:request-auth', {});
+    eventBus.emit(MicroToShellEvents.REQUEST_AUTH, {});
+
+    // Request API functions from shell
+    eventBus.emit(MicroToShellEvents.REQUEST_API_FUNCTIONS, {});
 
     // Clean up the subscription when the component unmounts
-    return unsubscribe;
+    return () => {
+      unsubscribeAuth();
+      unsubscribeApi();
+    };
   }, [eventBus, updateAuth]);
 
   const showNotification = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     // Use both the host app notification system and local toast
-    eventBus.emit('shell:notification', { type, message });
+    eventBus.emit(MicroToShellEvents.NOTIFICATION, { type, message });
 
     // Also show a local toast notification
     switch (type) {
@@ -95,7 +108,7 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
 
   // Helper function to navigate to shell paths
   const navigateToShell = (path: string) => {
-    eventBus.emit('shell:navigation', { path });
+    eventBus.emit(ShellToMicroEvents.NAVIGATION, { path });
   };
 
   return (

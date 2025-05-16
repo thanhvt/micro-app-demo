@@ -4,6 +4,7 @@ import { Table, Button, Input, Space, Tooltip } from 'antd';
 import { SearchOutlined, PlusOutlined, DeleteOutlined, EditOutlined, ExportOutlined, EyeOutlined } from '@ant-design/icons';
 import { mockProducts } from '../../data/mockData';
 import { Product } from '../../types/features';
+import ApiExample from '../shared/components/ApiExample';
 
 const ProductList: React.FC = () => {
   const [searchText, setSearchText] = useState('');
@@ -27,7 +28,7 @@ const ProductList: React.FC = () => {
       const baseUrl = window.location.origin;
       // Tạo URL đầy đủ đến trang chi tiết sản phẩm
       const detailUrl = `${baseUrl}/micro-app-demo/products/${productId}`;
-      
+
       // Mở tab mới với URL đã tạo
       window.open(detailUrl, '_blank');
     };
@@ -63,21 +64,21 @@ const ProductList: React.FC = () => {
       render: (_: any, record: Product) => (
         <Space size="middle">
         <Tooltip title="View Details">
-          <Button 
-            icon={<EyeOutlined />} 
-            onClick={() => navigate(`/products/${record.id}`)} 
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/products/${record.id}`)}
           />
         </Tooltip>
         <Tooltip title="Open in New Tab">
-          <Button 
-            icon={<ExportOutlined />} 
-            onClick={() => openInNewTab(record.id)} 
+          <Button
+            icon={<ExportOutlined />}
+            onClick={() => openInNewTab(record.id)}
           />
         </Tooltip>
         <Tooltip title="Edit">
-          <Button 
-            icon={<EditOutlined />} 
-            onClick={() => navigate(`/products/edit/${record.id}`)} 
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => navigate(`/products/edit/${record.id}`)}
           />
         </Tooltip>
       </Space>
@@ -89,8 +90,8 @@ const ProductList: React.FC = () => {
     <div className="micro-app-container">
       <div className="flex justify-between items-center mb-4">
         <h1 className="page-title">Products</h1>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           icon={<PlusOutlined />}
           onClick={handleAddProduct}
         >
@@ -115,6 +116,11 @@ const ProductList: React.FC = () => {
           rowKey="id"
           pagination={{ pageSize: 10 }}
         />
+      </div>
+
+      {/* Thêm component ApiExample */}
+      <div className="mt-8">
+        <ApiExample />
       </div>
     </div>
   );
