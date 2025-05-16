@@ -8,7 +8,7 @@
 }
 
 .micro-app-container {
-  @apply p-4;
+  /* @apply p-4; */
 }
 
 /* Custom styles matching host app */
@@ -374,3 +374,82 @@ body {
   border-color: #1A7D37 !important;
   box-shadow: 0 0 0 2px rgba(26, 125, 55, 0.1) !important;
 }
+
+/* Ant Design Input customization */
+.ant-input-affix-wrapper {
+  padding: 0 11px !important;
+  border-radius: 6px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  font-family: 'Inter', sans-serif !important;
+  line-height: 1.5 !important;
+  -webkit-appearance: none !important;
+  touch-action: manipulation !important;
+}
+
+.ant-input-affix-wrapper .ant-input {
+  height: 38px !important;
+  font-family: 'Inter', sans-serif !important;
+  line-height: 1.5 !important;
+  padding: 0 !important;
+}
+
+.ant-input-affix-wrapper .ant-input-prefix {
+  margin-right: 8px !important;
+}
+
+.ant-input-affix-wrapper .ant-input-suffix {
+  margin-left: 8px !important;
+}
+
+/* Đảm bảo input có size large giống host-app */
+.ant-input-lg, 
+.ant-input-affix-wrapper-lg {
+  height: 40px !important;
+  font-size: 16px !important;
+}
+
+/* Đảm bảo input có width 100% */
+.ant-input, 
+.ant-input-affix-wrapper {
+  width: 100% !important;
+}
+
+/* Đảm bảo input focus có style giống host-app */
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  border-color: #1A7D37 !important;
+  box-shadow: 0 0 0 2px rgba(26, 125, 55, 0.1) !important;
+}
+
+/* Đảm bảo icon search có style giống nhau */
+.ant-input-affix-wrapper .anticon-search {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Đảm bảo clear icon có style giống nhau */
+.ant-input-clear-icon {
+  color: rgba(0, 0, 0, 0.25) !important;
+  font-size: 14px !important;
+}
+
+.ant-input-clear-icon:hover {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Font face definitions */
+@font-face {
+  font-family: 'Inter';
+  src: url('/public/fonts/Inter_24pt-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/public/fonts/Inter_28pt-Bold.ttf') format('truetype');
+  font-weight: 600;
+}
+

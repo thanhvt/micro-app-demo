@@ -24,14 +24,9 @@ interface ContractFormProps {
 // Interface removed since we're using the Contract interface from types/contract.types.ts
 
 const FormContainer = styled.div`
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 24px;
   position: relative;
-
-  @media (max-width: 768px) {
-    padding: 16px;
-  }
 `;
 
 const StepContent = styled(motion.div)`

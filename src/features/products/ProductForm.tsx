@@ -122,8 +122,9 @@ const ProductForm: React.FC = () => {
               min={0}
               step={0.01}
               precision={2}
-              style={{ width: '100%' }}
               prefix="$"
+              className="w-full"
+              size="large"
               placeholder="Enter price"
             />
           </Form.Item>
@@ -133,7 +134,10 @@ const ProductForm: React.FC = () => {
             label="Stock"
             rules={[{ required: true, message: 'Please enter stock quantity' }]}
           >
-            <InputNumber min={0} style={{ width: '100%' }} placeholder="Enter stock quantity" />
+            <InputNumber min={0} 
+              className="w-full"
+              size='large'
+              style={{ width: '100%' }} placeholder="Enter stock quantity" />
           </Form.Item>
 
           <Form.Item>

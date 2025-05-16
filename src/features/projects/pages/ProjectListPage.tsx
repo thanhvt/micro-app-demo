@@ -5,11 +5,11 @@ import ProjectList from '../components/ProjectList/ProjectList';
 import { ANIMATION } from '../constants/project.constants';
 
 const PageContainer = styled(motion.div)`
-  padding: 24px;
+  // padding: 24px;
   
-  @media (max-width: 768px) {
-    padding: 16px;
-  }
+  // @media (max-width: 768px) {
+  //   padding: 16px;
+  // }
 `;
 
 const ProjectListPage: React.FC = () => {

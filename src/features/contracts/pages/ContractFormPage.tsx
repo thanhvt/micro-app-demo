@@ -82,7 +82,6 @@ const ContractFormPage: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="p-6"
       >
         <SuccessScreen
           title={id ? 'Cập nhật hợp đồng thành công!' : 'Tạo hợp đồng thành công!'}
@@ -105,11 +104,10 @@ const ContractFormPage: React.FC = () => {
         duration: ANIMATION.DURATION,
         ease: ANIMATION.EASE
       }}
-      className="p-6 relative"
     >
       <LoadingOverlay isLoading={loading} message="Đang tải dữ liệu..." />
 
-      <div className="flex items-center mb-6">
+      {/* <div className="flex items-center mb-6">
         <Button
           icon={<ArrowLeftOutlined />}
           onClick={() => navigate('/contracts')}
@@ -120,7 +118,7 @@ const ContractFormPage: React.FC = () => {
         <h1 className="text-2xl font-semibold m-0">
           {id ? 'Chỉnh sửa hợp đồng' : 'Tạo hợp đồng mới'}
         </h1>
-      </div>
+      </div> */}
 
       {!loading && (
         <ContractForm

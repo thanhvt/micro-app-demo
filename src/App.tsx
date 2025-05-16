@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
-import { Layout, Menu, Avatar, Dropdown, Button } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Button, ConfigProvider } from 'antd';
 import { UserOutlined, ShoppingOutlined, TeamOutlined, MenuUnfoldOutlined, MenuFoldOutlined, FileTextOutlined, ProjectOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -99,97 +99,107 @@ const App: React.FC<AppProps> = ({ basePath, authState, eventBus, path, isEmbedd
   };
 
   return (
-    <BrowserRouter basename={basePath}>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <Layout style={{ minHeight: "100vh" }}>
-        {!isEmbedded && (
-          <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
-            <div className="p-4 h-16 flex items-center justify-center border-b border-gray-200">
-              <h1
-                className={`text-lg font-bold ${
-                  collapsed ? "hidden" : "block"
-                }`}
-              >
-                Micro App Demo
-              </h1>
-              {collapsed && <ShoppingOutlined style={{ fontSize: "24px" }} />}
-            </div>
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["products"]}
-              style={{ height: "100%", borderRight: 0 }}
-            >
-              <Menu.Item key="products" icon={<ShoppingOutlined />}>
-                <Link to="/">Products</Link>
-              </Menu.Item>
-              <Menu.Item key="customers" icon={<TeamOutlined />}>
-                <Link to="/customers">Customers</Link>
-              </Menu.Item>
-              <Menu.Item key="contracts" icon={<FileTextOutlined />}>
-                <Link to="/contracts">Contracts</Link>
-              </Menu.Item>
-              <Menu.Item key="projects" icon={<ProjectOutlined />}>
-                <Link to="/projects">Projects</Link>
-              </Menu.Item>
-            </Menu>
-          </Sider>
-        )}
-
-        <Layout>
+    <ConfigProvider
+      componentSize="large"
+      theme={{
+        token: {
+          colorPrimary: '#1A7D37',
+          borderRadius: 6,
+        },
+      }}
+    >
+      <BrowserRouter basename={basePath}>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <Layout style={{ minHeight: "100vh" }}>
           {!isEmbedded && (
-          <Header className="bg-white p-0 flex justify-between items-center px-4 shadow-sm">
-            <Button
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
-            />
-            <div className="flex items-center">
-              {user && <span className="mr-2">Welcome, {user.name}</span>}
-              <Dropdown menu={{ items: [
-                { key: 'profile', label: 'Profile' },
-                { key: 'settings', label: 'Settings' },
-                { type: 'divider' },
-                { key: 'logout', label: 'Logout' }
-              ] }} placement="bottomRight">
-                <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
-              </Dropdown>
-            </div>
-          </Header>)}
-          <Content className="bg-gray-50">
-            <Routes>
-              <Route path="/" element={<Navigate to="/products" replace />} />
-              <Route path="/products" element={<ProductList />} />
-              <Route path="/products/new" element={<ProductForm />} />
-              <Route path="/products/edit/:id" element={<ProductForm />} />
-              <Route path="/products/:id" element={<ProductDetail showNotification={showNotification}/>} />
-              <Route path="/customers" element={<CustomerList />} />
-              <Route path="/customers/:id" element={<CustomerDetail />} />
-              <Route path="/customers/new" element={<CustomerForm />} />
-              <Route path="/customers/edit/:id" element={<CustomerForm />} />
-              <Route path="/contracts" element={<ContractListPage />} />
-              <Route path="/contracts/new" element={<ContractFormPage />} />
-              <Route path="/contracts/edit/:id" element={<ContractFormPage />} />
-              <Route path="/contracts/:id" element={<ContractDetailPage />} />
-              <Route path="/projects" element={<ProjectListPage />} />
-              <Route path="/projects/new" element={<ProjectFormPage />} />
-              <Route path="/projects/edit/:id" element={<ProjectFormPage />} />
-              <Route path="/projects/:id" element={<ProjectDetailPage />} />
-            </Routes>
-          </Content>
+            <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
+              <div className="p-4 h-16 flex items-center justify-center border-b border-gray-200">
+                <h1
+                  className={`text-lg font-bold ${
+                    collapsed ? "hidden" : "block"
+                  }`}
+                >
+                  Micro App Demo
+                </h1>
+                {collapsed && <ShoppingOutlined style={{ fontSize: "24px" }} />}
+              </div>
+              <Menu
+                mode="inline"
+                defaultSelectedKeys={["products"]}
+                style={{ height: "100%", borderRight: 0 }}
+              >
+                <Menu.Item key="products" icon={<ShoppingOutlined />}>
+                  <Link to="/">Products</Link>
+                </Menu.Item>
+                <Menu.Item key="customers" icon={<TeamOutlined />}>
+                  <Link to="/customers">Customers</Link>
+                </Menu.Item>
+                <Menu.Item key="contracts" icon={<FileTextOutlined />}>
+                  <Link to="/contracts">Contracts</Link>
+                </Menu.Item>
+                <Menu.Item key="projects" icon={<ProjectOutlined />}>
+                  <Link to="/projects">Projects</Link>
+                </Menu.Item>
+              </Menu>
+            </Sider>
+          )}
+
+          <Layout>
+            {!isEmbedded && (
+            <Header className="bg-white p-0 flex justify-between items-center px-4 shadow-sm">
+              <Button
+                type="text"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={() => setCollapsed(!collapsed)}
+              />
+              <div className="flex items-center">
+                {user && <span className="mr-2">Welcome, {user.name}</span>}
+                <Dropdown menu={{ items: [
+                  { key: 'profile', label: 'Profile' },
+                  { key: 'settings', label: 'Settings' },
+                  { type: 'divider' },
+                  { key: 'logout', label: 'Logout' }
+                ] }} placement="bottomRight">
+                  <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
+                </Dropdown>
+              </div>
+            </Header>)}
+            <Content className="bg-gray-50">
+              <Routes>
+                <Route path="/" element={<Navigate to="/products" replace />} />
+                <Route path="/products" element={<ProductList />} />
+                <Route path="/products/new" element={<ProductForm />} />
+                <Route path="/products/edit/:id" element={<ProductForm />} />
+                <Route path="/products/:id" element={<ProductDetail showNotification={showNotification}/>} />
+                <Route path="/customers" element={<CustomerList />} />
+                <Route path="/customers/:id" element={<CustomerDetail />} />
+                <Route path="/customers/new" element={<CustomerForm />} />
+                <Route path="/customers/edit/:id" element={<CustomerForm />} />
+                <Route path="/contracts" element={<ContractListPage />} />
+                <Route path="/contracts/new" element={<ContractFormPage />} />
+                <Route path="/contracts/edit/:id" element={<ContractFormPage />} />
+                <Route path="/contracts/:id" element={<ContractDetailPage />} />
+                <Route path="/projects" element={<ProjectListPage />} />
+                <Route path="/projects/new" element={<ProjectFormPage />} />
+                <Route path="/projects/edit/:id" element={<ProjectFormPage />} />
+                <Route path="/projects/:id" element={<ProjectDetailPage />} />
+              </Routes>
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ConfigProvider>
   );
 };
 

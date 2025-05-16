@@ -96,7 +96,6 @@ const ContractDetailPage = () => {
           duration: ANIMATION.DURATION,
           ease: ANIMATION.EASE
         }}
-        className="p-6"
       >
         <PageHeader>
           <PageTitle>Chi tiết hợp đồng</PageTitle>
